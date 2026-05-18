@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.engineeringdigest.journalApp.entity.User;
 import net.engineeringdigest.journalApp.repository.UserRepository;
 import org.bson.types.ObjectId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class UserService{
 
@@ -22,24 +21,23 @@ public class UserService{
     private UserRepository userRepository;
 
     private static final PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
-
-    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+   // private static final java.util.logging.Logger lOGGER =LoggerFactory.getLogger(UserService.class);
 
     public boolean saveNewUser(User user) {
-        try{
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Arrays.asList("USER"));
-        userRepository.save(user);
-        return true;
-    }catch (Exception e){
-            logger.error("hahahhahahaha");
-            logger.warn("hahahhahahaha");
-            logger.info("hahahhahahaha");
-            logger.debug("hahahhahahaha");
-            logger.trace("hahahhahahaha");
+        try {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRoles(Arrays.asList("USER"));
+            userRepository.save(user);
+            return true;
+        }catch(Exception e) {
+            log.error("hahahahahaha");
+            log.warn("hahahahahhah");
+            log.info("hahahahahhah");
+            log.debug("hahahahahhah");
+            log.trace("hahahahahhah");
             return false;
         }
-    }
+        }
 
     public void saveUser(User user) {
         userRepository.save(user);
