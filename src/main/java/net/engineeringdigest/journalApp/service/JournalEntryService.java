@@ -26,7 +26,6 @@ public class JournalEntryService {
     private UserService userService;
 
     @Transactional
-    @Slf4j
     public void saveEntry(JournalEntry journalEntry, String userName) {
 
         try {
