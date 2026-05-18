@@ -26,6 +26,7 @@ public class JournalEntryService {
     private UserService userService;
 
     @Transactional
+    @Slf4j
     public void saveEntry(JournalEntry journalEntry, String userName) {
 
         try {
@@ -33,9 +34,8 @@ public class JournalEntryService {
             journalEntry.setDate(LocalDateTime.now());
             JournalEntry saved = journalEntryRepository.save(journalEntry);
             user.getJournalEntries().add(saved);
-            userService.saveEntry(user);
+            userService.saveUser(user);
         } catch (Exception e) {
-            System.out.println(e);
             throw new RuntimeException("Error occurred while saving entry",e);
         }
 
@@ -53,12 +53,25 @@ public class JournalEntryService {
         return  journalEntryRepository.findById(id);
     }
 
-    public void  deleteById(ObjectId id, String userName){
+    @Transactional
+    public boolean  deleteById(ObjectId id, String userName) {
+        boolean removed = false;
 
-        User user = userService.findByUsername(userName);
-        user.getJournalEntries().removeIf(j -> j.getId().equals(id));
-        userService.saveEntry(user);
-        journalEntryRepository.deleteById(id);
+        try {
+            User user = userService.findByUsername(userName);
+            removed = user.getJournalEntries().removeIf(j -> j.getId().equals(id));
+            if (removed) {
+                userService.saveUser(user);
+                journalEntryRepository.deleteById(id);
+            }
+        }catch (Exception e){
+            log.error("Error occurred while deleting entry",e);
+            throw new RuntimeException("Error occurred while deleting entry",e);
+        }
+        return removed;
     }
+    //public List<JournalEntry> findByUserName(String userName){
+      //  return journalEntryRepository.findByUserName();
+    // }
 
 }
